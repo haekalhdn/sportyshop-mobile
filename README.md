@@ -23,3 +23,34 @@ BuildContext adalah "alamat" atau "lokasi" dari sebuah widget di dalam widget tr
 **6. Jelaskan konsep "hot reload" di Flutter dan bagaimana bedanya dengan "hot restart".**
 
 Hot Reload adalah proses super cepat yang menyuntikkan kode baru ke dalam aplikasi yang sedang berjalan. Flutter akan membangun ulang widget tree, tetapi mempertahankan state (data) aplikasi. Ini sempurna untuk pengembangan UI (mengubah layout, warna) karena hasilnya instan tanpa mereset data. Hot Restart, di sisi lain, adalah proses yang lebih lambat yang memuat ulang kode aplikasi dan mereset state (data) aplikasi. Ini seperti menutup dan membuka kembali aplikasi. Hot Restart diperlukan untuk perubahan yang tidak bisa ditangani Hot Reload, seperti mengubah constructor global atau logika inisialisasi di main().
+
+
+## Tugas 8
+
+**1. Jelaskan perbedaan antara `Navigator.push()` dan `Navigator.pushReplacement()` pada Flutter. Dalam kasus apa sebaiknya masing-masing digunakan pada aplikasi Football Shop kamu?**
+
+`Navigator.push()` "menumpuk" halaman baru di atas halaman saat ini. Halaman lama masih ada di memori, dan pengguna bisa kembali ke halaman tersebut dengan menekan tombol "Back". Ini cocok digunakan saat saya ingin pengguna bisa kembali, misalnya saat menekan tombol **"Tambah Produk"** dari halaman utama; setelah selesai menambah produk, pengguna bisa kembali ke halaman utama. `Navigator.pushReplacement()` "mengganti" halaman saat ini dengan halaman baru. Halaman lama dihancurkan dan dihapus dari tumpukan navigasi. Pengguna tidak bisa kembali ke halaman sebelumnya. Ini cocok digunakan untuk alur yang tidak boleh diulang, seperti setelah **Login** (saya ganti halaman Login dengan Halaman Utama) atau saat menggunakan **Drawer** untuk pindah menu. Saat di Drawer saya memilih **"Halaman Utama"**, saya menggunakan `pushReplacement` agar tumpukan navigasi tetap bersih dan tidak menumpuk halaman yang sama berulang kali.
+
+**2. Bagaimana kamu memanfaatkan *hierarchy widget* seperti `Scaffold`, `AppBar`, dan `Drawer` untuk membangun struktur halaman yang konsisten di seluruh aplikasi?**
+
+tampilan yang konsisten. `Scaffold` menyediakan kerangka dasar untuk setiap halaman. Dengan menggunakan `Scaffold` di setiap halaman (`Halaman Utama` dan `Halaman Form`), saya mendapatkan struktur yang seragam.
+* `AppBar` (diletakkan di properti `appBar` milik `Scaffold`) agar halaman memiliki bilah judul atas yang seragam, di mana saya bisa konsisten menempatkan judul halaman.
+* `Drawer` (diletakkan di properti `drawer` milik `Scaffold`) agar menu navigasi samping yang sama persis (`LeftDrawer`) dapat diakses dari halaman mana pun yang menggunakannya. Ini memberi pengguna cara yang familiar untuk berpindah antar halaman dari mana saja.
+Dengan menggunakan tiga widget ini, saya tidak perlu membuat ulang bilah judul atau menu samping di setiap file, cukup panggil widget yang sudah ada.
+
+**3. Dalam konteks desain antarmuka, apa kelebihan menggunakan *layout widget* seperti `Padding`, `SingleChildScrollView`, dan `ListView` saat menampilkan elemen-elemen form? Berikan contoh penggunaannya dari aplikasi kamu.**
+
+Kelebihan utamanya adalah untuk menciptakan UI yang rapi, responsif, dan fungsional.
+
+* `Padding`: Memberi "ruang napas" antar elemen. Tanpa `Padding`, semua `TextFormField` di form akan saling menempel di tepi layar dan satu sama lain, membuatnya terlihat berantakan dan sulit dibaca. Di aplikasi saya, setiap `TextFormField` dibungkus `Padding(padding: const EdgeInsets.all(8.0), ...)` agar terlihat rapi.
+* `SingleChildScrollView`: Ini sangat penting untuk form. Jika formnya panjang (seperti di aplikasi saya) dan dibuka di layar HP yang kecil, bagian bawah form (misalnya tombol "Save") akan terpotong dan tidak bisa diakses. `SingleChildScrollView` membungkus `Form` sehingga pengguna bisa *scroll* ke bawah untuk mengakses semua elemen form, mencegah *overflow error*.
+* `ListView` (atau `Column` di dalam `SingleChildScrollView`): Digunakan untuk menyusun elemen-elemen form (seperti `TextFormField`, `Switch`, dan `Button`) secara vertikal, dari atas ke bawah, yang merupakan tata letak paling intuitif untuk mengisi formulir.
+
+**4. Bagaimana kamu menyesuaikan *warna tema* agar aplikasi Football Shop memiliki identitas visual yang konsisten dengan brand toko?**
+
+Konsistensi visual dicapai dengan mendefinisikan skema warna terpusat di dalam `MaterialApp`. Di file `main.dart`, saya mengatur `ThemeData` agar menggunakan `primarySwatch: Colors.blue`.
+Ini artinya:
+1.  Semua widget yang secara *default* menggunakan warna utama aplikasi (seperti `AppBar`) akan otomatis berwarna biru tanpa perlu diatur manual di setiap halaman.
+2.  Warna turunan (seperti `secondary`) juga diatur, yang digunakan oleh widget lain seperti `FloatingActionButton` atau, dalam kasus saya, saya gunakan untuk `ShopCard` (tombol) di tutorial sebelumnya.
+Dengan mengatur `colorScheme` di satu tempat (`main.dart`), saya memastikan bahwa `AppBar` di `Halaman Utama` dan `AppBar` di `Halaman Form` (meskipun saya timpa manual warnanya) memiliki palet dasar yang sama, sehingga menciptakan identitas *brand* "SportyShop" yang konsisten untuk developing yang baik kedepannya.
+```eof
