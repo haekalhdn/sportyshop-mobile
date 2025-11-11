@@ -48,9 +48,8 @@ Kelebihan utamanya adalah untuk menciptakan UI yang rapi, responsif, dan fungsio
 
 **4. Bagaimana kamu menyesuaikan *warna tema* agar aplikasi Football Shop memiliki identitas visual yang konsisten dengan brand toko?**
 
-Konsistensi visual dicapai dengan mendefinisikan skema warna terpusat di dalam `MaterialApp`. Di file `main.dart`, saya mengatur `ThemeData` agar menggunakan `primarySwatch: Colors.blue`.
+Konsistensinya dicapai dengan mendefinisikan skema warna di dalam `MaterialApp`. Di file `main.dart`, saya mengatur `ThemeData` agar menggunakan `primarySwatch: Colors.blue`.
 Ini artinya:
 1.  Semua widget yang secara *default* menggunakan warna utama aplikasi (seperti `AppBar`) akan otomatis berwarna biru tanpa perlu diatur manual di setiap halaman.
 2.  Warna turunan (seperti `secondary`) juga diatur, yang digunakan oleh widget lain seperti `FloatingActionButton` atau, dalam kasus saya, saya gunakan untuk `ShopCard` (tombol) di tutorial sebelumnya.
 Dengan mengatur `colorScheme` di satu tempat (`main.dart`), saya memastikan bahwa `AppBar` di `Halaman Utama` dan `AppBar` di `Halaman Form` (meskipun saya timpa manual warnanya) memiliki palet dasar yang sama, sehingga menciptakan identitas *brand* "SportyShop" yang konsisten untuk developing yang baik kedepannya.
-```eof
