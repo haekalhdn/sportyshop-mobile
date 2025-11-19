@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sportyshop/screens/menu.dart';
+import 'package:sportyshop/screens/list_product.dart';
 import 'package:sportyshop/screens/product_form.dart';
 
 class LeftDrawer extends StatelessWidget {
@@ -8,13 +8,15 @@ class LeftDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      backgroundColor: Theme.of(context).colorScheme.surface,
       child: ListView(
         children: [
-          const DrawerHeader(
+          DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.blue,
+              color: Theme.of(context).colorScheme.surface,
             ),
-            child: Column(
+            child: const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   'SportyShop',
@@ -27,11 +29,11 @@ class LeftDrawer extends StatelessWidget {
                 ),
                 Padding(padding: EdgeInsets.all(10)),
                 Text(
-                  "Semua kebutuhan olahragamu ada di sini!",
+                  "Gear Olahraga Terbaik!",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 15,
-                    color: Colors.white,
+                    color: Colors.white70,
                     fontWeight: FontWeight.normal,
                   ),
                 ),
@@ -39,23 +41,21 @@ class LeftDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
-            leading: const Icon(Icons.home_outlined),
-            title: const Text('Halaman Utama'),
-            // Bagian redirection ke Halaman Utama
+            leading: const Icon(Icons.home_outlined, color: Colors.white),
+            title: const Text('Halaman Utama', style: TextStyle(color: Colors.white)),
             onTap: () {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => MyHomePage(),
+                    builder: (context) => const ProductListPage(),
                   ));
             },
           ),
           ListTile(
-            leading: const Icon(Icons.add_shopping_cart),
-            title: const Text('Tambah Produk'),
-            // Bagian redirection ke Halaman Form
+            leading: const Icon(Icons.add_shopping_cart, color: Colors.white),
+            title: const Text('Tambah Produk', style: TextStyle(color: Colors.white)),
             onTap: () {
-              Navigator.pushReplacement(
+              Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => const ProductFormPage()));

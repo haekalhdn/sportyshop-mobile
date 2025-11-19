@@ -1,4 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:sportyshop/screens/list_product.dart';
 import 'package:sportyshop/widgets/left_drawer.dart';
 
 class ProductFormPage extends StatefulWidget {
@@ -14,21 +18,20 @@ class _ProductFormPageState extends State<ProductFormPage> {
   int _price = 0;
   String _description = "";
   String _thumbnail = "";
-  String _category = "";
+  String _category = "jersey";
+  int _stock = 0;
   bool _isFeatured = false;
+
+  final List<String> _categories = [
+    'jersey', 'shoe', 'pants', 'shirt', 'outer',
+    'socks', 'bag', 'equipment', 'accessory', 'protection'
+  ];
 
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
     return Scaffold(
-      appBar: AppBar(
-        title: const Center(
-          child: Text(
-            'Form Tambah Produk',
-          ),
-        ),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-      ),
+      appBar: AppBar(title: const Center(child: Text('Form Tambah Produk'))),
       drawer: const LeftDrawer(),
       body: Form(
         key: _formKey,
@@ -36,206 +39,98 @@ class _ProductFormPageState extends State<ProductFormPage> {
             child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // === Nama Produk ===
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
-                decoration: InputDecoration(
-                  hintText: "Nama Produk",
-                  labelText: "Nama Produk",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                ),
-                onChanged: (String? value) {
-                  setState(() {
-                    _name = value!;
-                  });
-                },
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return "Nama tidak boleh kosong!";
-                  }
-                  return null;
-                },
+                decoration: InputDecoration(labelText: "Nama Produk", border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
+                onChanged: (String? value) { setState(() { _name = value!; }); },
+                validator: (String? value) { if (value == null || value.isEmpty) return "Nama tidak boleh kosong!"; return null; },
               ),
             ),
-
-            // === Harga ===
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
-                decoration: InputDecoration(
-                  hintText: "Harga",
-                  labelText: "Harga",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                ),
+                decoration: InputDecoration(labelText: "Harga", border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
                 keyboardType: TextInputType.number,
-                onChanged: (String? value) {
-                  setState(() {
-                    _price = int.tryParse(value!) ?? 0;
-                  });
-                },
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return "Harga tidak boleh kosong!";
-                  }
-                  if (int.tryParse(value) == null) {
-                    return "Harga harus berupa angka!";
-                  }
-                  if (int.parse(value) <= 0) {
-                    return "Harga tidak boleh negatif atau nol!";
-                  }
-                  return null;
-                },
+                onChanged: (String? value) { setState(() { _price = int.tryParse(value!) ?? 0; }); },
+                validator: (String? value) { if (value == null || value.isEmpty) return "Harga tidak boleh kosong!"; if (int.tryParse(value) == null) return "Harga harus angka!"; return null; },
               ),
             ),
-
-            // === Deskripsi ===
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
-                maxLines: 3,
-                decoration: InputDecoration(
-                  hintText: "Deskripsi",
-                  labelText: "Deskripsi",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                ),
-                onChanged: (String? value) {
-                  setState(() {
-                    _description = value!;
-                  });
-                },
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return "Deskripsi tidak boleh kosong!";
-                  }
-                  return null;
-                },
+                decoration: InputDecoration(labelText: "Deskripsi", border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
+                onChanged: (String? value) { setState(() { _description = value!; }); },
+                validator: (String? value) { if (value == null || value.isEmpty) return "Deskripsi tidak boleh kosong!"; return null; },
               ),
             ),
-
-            // === URL Thumbnail ===
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
-                decoration: InputDecoration(
-                  hintText: "URL Thumbnail",
-                  labelText: "URL Thumbnail",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                ),
-                onChanged: (String? value) {
-                  setState(() {
-                    _thumbnail = value!;
-                  });
-                },
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return "URL Thumbnail tidak boleh kosong!";
-                  }
-                  if (!Uri.tryParse(value)!.isAbsolute) {
-                    return "URL tidak valid!";
-                  }
-                  return null;
-                },
+                decoration: InputDecoration(labelText: "Thumbnail URL", border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
+                onChanged: (String? value) { setState(() { _thumbnail = value!; }); },
+                validator: (String? value) { if (value == null || value.isEmpty) return "Thumbnail tidak boleh kosong!"; return null; },
               ),
             ),
-
-            // === Kategori ===
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
-                decoration: InputDecoration(
-                  hintText: "Kategori",
-                  labelText: "Kategori",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                ),
-                onChanged: (String? value) {
-                  setState(() {
-                    _category = value!;
-                  });
-                },
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return "Kategori tidak boleh kosong!";
-                  }
-                  return null;
-                },
+                decoration: InputDecoration(labelText: "Stok", border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
+                keyboardType: TextInputType.number,
+                onChanged: (String? value) { setState(() { _stock = int.tryParse(value!) ?? 0; }); },
+                validator: (String? value) { if (value == null || value.isEmpty) return "Stok tidak boleh kosong!"; if (int.tryParse(value) == null) return "Stok harus angka!"; return null; },
               ),
             ),
-
-            // === Is Featured ===
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: DropdownButtonFormField<String>(
+                value: _category,
+                items: _categories.map((String items) {
+                  return DropdownMenuItem(value: items, child: Text(items));
+                }).toList(),
+                onChanged: (String? newValue) { setState(() { _category = newValue!; }); },
+                decoration: InputDecoration(labelText: "Kategori", border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: SwitchListTile(
                 title: const Text("Produk Unggulan"),
                 value: _isFeatured,
-                onChanged: (bool value) {
-                  setState(() {
-                    _isFeatured = value;
-                  });
-                },
+                onChanged: (bool value) { setState(() { _isFeatured = value; }); },
               ),
             ),
-
-            // === Tombol Simpan ===
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                        WidgetStateProperty.all(Colors.blue),
-                  ),
-                  onPressed: () {
+                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary)),
+                  onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: const Text('Produk berhasil tersimpan!'),
-                            content: SingleChildScrollView(
-                              child: Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                children: [
-                                  Text('Nama: $_name'),
-                                  Text('Harga: $_price'),
-                                  Text('Deskripsi: $_description'),
-                                  Text('Kategori: $_category'),
-                                  Text('URL Thumbnail: $_thumbnail'),
-                                  Text(
-                                      'Unggulan: ${_isFeatured ? "Ya" : "Tidak"}'),
-                                ],
-                              ),
-                            ),
-                            actions: [
-                              TextButton(
-                                child: const Text('OK'),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
-                            ],
-                          );
-                        },
+                      final response = await request.postJson(
+                        "http://127.0.0.1:8000/create-flutter/",
+                        jsonEncode({
+                          "name": _name,
+                          "price": _price,
+                          "description": _description,
+                          "thumbnail": _thumbnail,
+                          "category": _category,
+                          "stock": _stock,
+                          "is_featured": _isFeatured,
+                        }),
                       );
-                      _formKey.currentState!.reset();
+                      if (context.mounted) {
+                        if (response['status'] == 'success') {
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Produk berhasil disimpan!")));
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ProductListPage()));
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Gagal menyimpan produk.")));
+                        }
+                      }
                     }
                   },
-                  child: const Text(
-                    "Save",
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  child: const Text("Save", style: TextStyle(color: Colors.white)),
                 ),
               ),
             ),
