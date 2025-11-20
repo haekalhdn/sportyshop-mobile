@@ -18,8 +18,8 @@ class _ProductListPageState extends State<ProductListPage> {
 
   Future<List<Product>> fetchProduct(CookieRequest request) async {
     String endpoint = filterByMe 
-        ? 'http://127.0.0.1:8000/json/?filter=my' 
-        : 'http://127.0.0.1:8000/json/';
+        ? 'https://haekal-handrian-sportyshop.pbp.cs.ui.ac.id/json/?filter=my' 
+        : 'https://haekal-handrian-sportyshop.pbp.cs.ui.ac.id/json/';
 
     final response = await request.get(endpoint);
 
@@ -43,7 +43,7 @@ class _ProductListPageState extends State<ProductListPage> {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
-              final response = await request.logout("http://127.0.0.1:8000/auth/logout/");
+              final response = await request.logout("https://haekal-handrian-sportyshop.pbp.cs.ui.ac.id/auth/logout/");
               String message = response["message"];
               if (context.mounted) {
                 if (response['status']) {

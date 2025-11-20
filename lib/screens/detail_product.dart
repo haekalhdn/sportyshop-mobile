@@ -15,7 +15,7 @@ class ProductDetailPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Image.network(
-              product.thumbnail,
+              'https://haekal-handrian-sportyshop.pbp.cs.ui.ac.id/proxy-image/?url=${Uri.encodeComponent(product.thumbnail)}',
               width: double.infinity,
               height: 300,
               fit: BoxFit.cover,

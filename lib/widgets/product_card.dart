@@ -29,7 +29,7 @@ class ProductCard extends StatelessWidget {
           children: [
             Expanded(
               child: Image.network(
-                product.thumbnail,
+                'https://haekal-handrian-sportyshop.pbp.cs.ui.ac.id/proxy-image/?url=${Uri.encodeComponent(product.thumbnail)}',
                 width: double.infinity,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
